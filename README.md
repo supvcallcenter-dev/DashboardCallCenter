@@ -87,3 +87,23 @@ Si **aún** te aparece `404: NOT_FOUND`, casi siempre es por configuración del 
 
 5. **Forzar nuevo deploy**
    - Haz un commit nuevo y push, luego redeploy desde ese commit.
+
+
+## Fix final si aún sale 404 (modo online en Vercel)
+
+Para cortar el problema de raíz, ya dejé también una carpeta `dist/` con los archivos estáticos (`index.html`, `styles.css`, `script.js`).
+
+En Vercel configura exactamente:
+
+- **Framework Preset**: `Other`
+- **Build Command**: *(vacío)*
+- **Output Directory**: `dist`
+- **Root Directory**: carpeta del repo donde existe `dist/`
+- **Production Branch**: la rama donde estás haciendo commits (si trabajas en `work`, pon `work`)
+
+### Verificación rápida en Vercel
+
+1. En **Deployments → Build Logs** valida que suba archivos desde `dist/`.
+2. Abre `https://tu-dominio.vercel.app/index.html`.
+3. Si `index.html` carga pero `/` no, haz **Redeploy** después de guardar settings.
+4. Si sigue igual, elimina el proyecto en Vercel y vuelve a importarlo con esos valores (esto limpia settings viejos cacheados).
