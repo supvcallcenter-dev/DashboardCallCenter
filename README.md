@@ -45,3 +45,22 @@ Abrir: `http://localhost:4173`
 
 - Es una app 100% frontend (HTML/CSS/JS), por lo que se puede hospedar en cualquier hosting estático.
 - Los datos se guardan en `localStorage` del navegador.
+
+
+## Solución al error de Vercel `404: NOT_FOUND`
+
+Si Vercel muestra:
+
+- `404: NOT_FOUND`
+- `Code: NOT_FOUND`
+- `ID: iad1::...`
+
+aplica esta configuración y valida el proyecto en Vercel:
+
+1. **Root Directory**: debe ser la carpeta donde están `index.html`, `styles.css`, `script.js`.
+2. **Framework Preset**: `Other`.
+3. **Build Command**: vacío.
+4. **Output Directory**: vacío.
+5. Mantén este `vercel.json` con `rewrites` para que todas las rutas respondan con `index.html`.
+
+Después, vuelve a desplegar desde **Deployments → Redeploy**.
