@@ -3,105 +3,70 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Catálogo Digital Dinámico</title>
+    <title>Web Catálogo Digital</title>
+    <meta name="description" content="Catálogo digital web con CRUD, filtros dependientes y búsqueda avanzada." />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="container">
-      <header>
-        <h1>Catálogo Digital</h1>
-        <p>
-          Gestión dinámica de vehículos con edición, eliminación, adición y
-          filtrado avanzado por marca y modelo.
-        </p>
-      </header>
+    <header class="site-header">
+      <div class="header-inner">
+        <div>
+          <p class="eyebrow">Dashboard Call Center</p>
+          <h1>Catálogo Digital Web</h1>
+          <p class="lead">
+            Administra ítems de forma dinámica: agrega, edita, elimina y filtra por
+            marca/modelo con dependencia automática.
+          </p>
+        </div>
+        <button id="openCreateModalBtn">+ Nuevo ítem</button>
+      </div>
+    </header>
 
-      <section class="card">
-        <h2 id="formTitle">Agregar nuevo item</h2>
-        <form id="catalogForm" class="form-grid">
-          <label>
-            Marca
-            <input name="marca" type="text" placeholder="Ej: Toyota" required />
-          </label>
-          <label>
-            Modelo
-            <input name="modelo" type="text" placeholder="Ej: Corolla" required />
-          </label>
-          <label>
-            Modelo Original
-            <input
-              name="modeloOriginal"
-              type="text"
-              placeholder="Ej: Corolla XEI"
-              required
-            />
-          </label>
-          <label>
-            Año
-            <input name="anio" type="number" min="1900" max="2100" required />
-          </label>
-          <label>
-            Descripción
-            <input
-              name="descripcion"
-              type="text"
-              placeholder="Detalle del vehículo"
-              required
-            />
-          </label>
-          <label>
-            Código
-            <input
-              name="codigo"
-              type="text"
-              placeholder="SKU-0001"
-              required
-            />
-          </label>
-          <label class="full-width">
-            Descripción Estandarizada
-            <textarea
-              name="descripcionEstandarizada"
-              rows="2"
-              placeholder="Texto estandarizado"
-              required
-            ></textarea>
-          </label>
-
-          <div class="form-actions full-width">
-            <button type="submit" id="submitBtn">Guardar item</button>
-            <button type="button" id="cancelEditBtn" class="secondary hidden">
-              Cancelar edición
-            </button>
-          </div>
-        </form>
+    <main class="layout">
+      <section class="panel stats" aria-label="Indicadores">
+        <article>
+          <h2 id="totalItems">0</h2>
+          <p>Total de ítems</p>
+        </article>
+        <article>
+          <h2 id="totalBrands">0</h2>
+          <p>Marcas activas</p>
+        </article>
+        <article>
+          <h2 id="totalModels">0</h2>
+          <p>Modelos activos</p>
+        </article>
       </section>
 
-      <section class="card">
+      <section class="panel">
         <h2>Buscador avanzado</h2>
-        <div class="search-area">
+        <div class="filters-grid">
           <div>
-            <h3>Marca</h3>
+            <h3>Filtrar por Marca</h3>
             <div id="brandFilters" class="button-group"></div>
           </div>
           <div>
-            <h3>Modelo</h3>
+            <h3>Filtrar por Modelo</h3>
             <div id="modelFilters" class="button-group"></div>
           </div>
           <div>
             <h3>Búsqueda textual</h3>
-            <input
-              id="textSearch"
-              type="search"
-              placeholder="Buscar por código, descripción, año..."
-            />
+            <input id="textSearch" type="search" placeholder="Código, descripción, año..." />
+          </div>
+          <div>
+            <h3>Utilidades</h3>
+            <div class="button-group">
+              <button id="exportBtn" class="secondary" type="button">Exportar JSON</button>
+              <label class="file-btn" for="importFile">Importar JSON</label>
+              <input id="importFile" type="file" accept="application/json" hidden />
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="card">
-        <div class="table-header">
-          <h2>Items del catálogo</h2>
+      <section class="panel">
+        <div class="table-head">
+          <h2>Listado del Catálogo</h2>
           <span id="counter"></span>
         </div>
         <div class="table-wrap">
@@ -124,6 +89,30 @@
       </section>
     </main>
 
+    <dialog id="itemModal">
+      <form id="catalogForm" method="dialog" class="modal-form">
+        <header class="modal-header">
+          <h2 id="formTitle">Nuevo ítem</h2>
+          <button id="closeModalBtn" type="button" class="ghost">✕</button>
+        </header>
+
+        <div class="form-grid">
+          <label>Marca <input name="marca" required /></label>
+          <label>Modelo <input name="modelo" required /></label>
+          <label>Modelo Original <input name="modeloOriginal" required /></label>
+          <label>Año <input name="anio" type="number" min="1900" max="2100" required /></label>
+          <label>Descripción <input name="descripcion" required /></label>
+          <label>Código <input name="codigo" required /></label>
+          <label class="full">Descripción Estandarizada <textarea name="descripcionEstandarizada" rows="2" required></textarea></label>
+        </div>
+
+        <footer class="modal-actions">
+          <button id="submitBtn" type="submit">Guardar</button>
+          <button id="cancelEditBtn" type="button" class="secondary hidden">Cancelar edición</button>
+        </footer>
+      </form>
+    </dialog>
+
     <template id="rowTemplate">
       <tr>
         <td data-key="marca"></td>
@@ -135,8 +124,8 @@
         <td data-key="descripcionEstandarizada"></td>
         <td>
           <div class="row-actions">
-            <button class="small" data-action="edit">Editar</button>
-            <button class="small danger" data-action="delete">Eliminar</button>
+            <button data-action="edit" class="small" type="button">Editar</button>
+            <button data-action="delete" class="small danger" type="button">Eliminar</button>
           </div>
         </td>
       </tr>
