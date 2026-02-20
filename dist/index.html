@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Catálogo Digital</title>
+    <meta name="description" content="Catálogo digital web con CRUD, filtros dependientes y búsqueda avanzada." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <div>
+          <p class="eyebrow">Dashboard Call Center</p>
+          <h1>Catálogo Digital Web</h1>
+          <p class="lead">
+            Administra ítems de forma dinámica: agrega, edita, elimina y filtra por
+            marca/modelo con dependencia automática.
+          </p>
+        </div>
+        <button id="openCreateModalBtn">+ Nuevo ítem</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel stats" aria-label="Indicadores">
+        <article>
+          <h2 id="totalItems">0</h2>
+          <p>Total de ítems</p>
+        </article>
+        <article>
+          <h2 id="totalBrands">0</h2>
+          <p>Marcas activas</p>
+        </article>
+        <article>
+          <h2 id="totalModels">0</h2>
+          <p>Modelos activos</p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <h2>Buscador avanzado</h2>
+        <div class="filters-grid">
+          <div>
+            <h3>Filtrar por Marca</h3>
+            <div id="brandFilters" class="button-group"></div>
+          </div>
+          <div>
+            <h3>Filtrar por Modelo</h3>
+            <div id="modelFilters" class="button-group"></div>
+          </div>
+          <div>
+            <h3>Búsqueda textual</h3>
+            <input id="textSearch" type="search" placeholder="Código, descripción, año..." />
+          </div>
+          <div>
+            <h3>Utilidades</h3>
+            <div class="button-group">
+              <button id="exportBtn" class="secondary" type="button">Exportar JSON</button>
+              <label class="file-btn" for="importFile">Importar JSON</label>
+              <input id="importFile" type="file" accept="application/json" hidden />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="table-head">
+          <h2>Listado del Catálogo</h2>
+          <span id="counter"></span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Modelo Original</th>
+                <th>Año</th>
+                <th>Descripción</th>
+                <th>Código</th>
+                <th>Descripción Estandarizada</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="catalogTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="itemModal">
+      <form id="catalogForm" method="dialog" class="modal-form">
+        <header class="modal-header">
+          <h2 id="formTitle">Nuevo ítem</h2>
+          <button id="closeModalBtn" type="button" class="ghost">✕</button>
+        </header>
+
+        <div class="form-grid">
+          <label>Marca <input name="marca" required /></label>
+          <label>Modelo <input name="modelo" required /></label>
+          <label>Modelo Original <input name="modeloOriginal" required /></label>
+          <label>Año <input name="anio" type="number" min="1900" max="2100" required /></label>
+          <label>Descripción <input name="descripcion" required /></label>
+          <label>Código <input name="codigo" required /></label>
+          <label class="full">Descripción Estandarizada <textarea name="descripcionEstandarizada" rows="2" required></textarea></label>
+        </div>
+
+        <footer class="modal-actions">
+          <button id="submitBtn" type="submit">Guardar</button>
+          <button id="cancelEditBtn" type="button" class="secondary hidden">Cancelar edición</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <template id="rowTemplate">
+      <tr>
+        <td data-key="marca"></td>
+        <td data-key="modelo"></td>
+        <td data-key="modeloOriginal"></td>
+        <td data-key="anio"></td>
+        <td data-key="descripcion"></td>
+        <td data-key="codigo"></td>
+        <td data-key="descripcionEstandarizada"></td>
+        <td>
+          <div class="row-actions">
+            <button data-action="edit" class="small" type="button">Editar</button>
+            <button data-action="delete" class="small danger" type="button">Eliminar</button>
+          </div>
+        </td>
+      </tr>
+    </template>
+
+    <script src="script.js"></script>
+  </body>
+</html>
